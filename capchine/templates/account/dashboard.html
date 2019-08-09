@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+  <br>
+<b>Role:</b> {{role}}
+<hr>
+<b>Name:</b> {{request.user.get_full_name }}
+<hr>
+<b>Email:</b> {{request.user.email}}
+
+
+{% ifequal role "Teacher" %}
+<hr>
+<b>Search Count: </b> {{search_count}}
+</hr>
+<hr>
+<form action="/search_student" method="GET">
+  <input type="search" name="searching">
+  <p><input type="submit" value="Search"></p>
+</form>
+
+
+{% endifequal %}
+
+
+{% ifequal role "Student" %}
+<hr>
+{% if cd %}
+<b>Generated Code: </b> {{cd}}  &nbsp; &nbsp; <b>Rating Allowed:</b> {{rating}} &nbsp; &nbsp; <b>Code access count:</b> {{code_count}}
+&nbsp; <b>Created: </b> {{sc.created|naturaltime}}
+{% endif %}
+<hr>
+<br>
+<form action="/generate_code" method="GET">
+  <input type="checkbox" name="rating" value="Yes">Allow Rating<br>
+  <p><input type="submit" value="Generate Search Code"></p>
+</form>
+<hr>
+<b>Profile Searched by:</b>
+{% for t in accessed_by %}
+    <p>{{t.get_full_name}}</p>
+{% endfor %}
+
+<br>
+<br>
+<b> Ratings: </b>
+<br>
+{% for r in ratings %}
+    <p>{{r.teacher}} : &nbsp; {{r.rating}} &nbsp; {{r.created|naturaltime}}</p>
+{% endfor %}
+
+{% endifequal %}
+
+{% ifequal role "Teacher" %}
+<hr>
+<b>Searched Students:</b>
+{% for a in accessed_profiles %}
+    <p>{{a}}</p>
+{% endfor %}
+<br><br>
+<b>Given Ratings:</b><br>
+{% for g in rating_profiles %}
+   <p> {{g.u}} : &nbsp; {{g.rating}} &nbsp; {{g.created|naturaltime}}</p>
+{% endfor %}
+
+{% endifequal %}
+
+  
+  <p>You can also <a href="{% url "edit" %}">edit your profile</a> or <a href="{% url "password_change" %}">change your password</a>.<p>
+{% endblock %}

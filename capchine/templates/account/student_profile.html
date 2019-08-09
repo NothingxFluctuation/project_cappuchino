@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Student Information{% endblock %}
+
+{% block content %}
+  <h1>Student Information</h1>
+  <br>
+<b>Role:</b> Student
+<hr>
+<b>Name:</b> {{std.get_full_name }}
+<hr>
+<b>Search Code:</b> {{sc.code}}
+<hr>
+<hr>
+<br>
+<b>Student Ratings:</b>
+{% for r in ratings %}
+    <p>{{r.teacher}} : &nbsp; {{r.rating}} &nbsp; {{r.created|naturaltime}}</p>
+{% endfor %}
+
+<br><br><br>
+You can give the new rating.
+<br>
+<br>
+<b>Rating</b> <br><br>
+<form action="http://127.0.0.1:8000/student_rating/" method="GET">
+    <select name="ratings">
+        <option value="1">*</option>
+        <option value="2">**</option>
+        <option value="3">***</option>
+        <option value="4">****</option>
+        <option value="5">*****</option>
+
+    </select>
+    <br><br>
+    <input type="hidden" name="custId" value={{sc.code}}>
+    <p><input type="submit" value="Rate Student"></p>
+  </form>
+
+{% endblock %}
